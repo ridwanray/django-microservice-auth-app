@@ -1,4 +1,4 @@
-# Custom Authentication & Authorization in Django-DRF
+# Django(DRF) Microservice Authentication App
 
 
 ## Tools & Services:
@@ -9,13 +9,6 @@
 - Flower dashboard: For monitoring celery background tasks
 - PostgreSQL: Relational DB
 
-
-## By the end of this tutorial 
-
-- Create an API that allows an admin to create roles and assign permissions into the role.
-- Create users and assign one or more roles to users.
-- Use these roles and permissions to protect API endpoints so that only users with the appropriate permissions can access them
-- Lock a user account after the maximum allowable failed attempts.
 
 ## Running locally
 
@@ -92,6 +85,3 @@ http://localhost:8000/api/v1/doc
 <br><br><br>
 ![Screenshot](screenshot2.png)
 <br><br><br>
-
-# Test Output
-![Screenshot](screenshot3.png)
