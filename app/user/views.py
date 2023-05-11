@@ -6,18 +6,15 @@ from django.utils.crypto import get_random_string
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import filters, serializers, status, viewsets
-from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.settings import api_settings
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .enums import TokenEnum
 from .filters import UserFilter
 from .models import Permission, Role, Token, User
-from .serializers import (AuthTokenSerializer,
-                          CreatePasswordFromTokenSerializer,
+from .serializers import (CreatePasswordFromTokenSerializer,
                           CreateUserSerializer,
                           CustomObtainTokenPairSerializer, EmailSerializer,
                           ListUserSerializer, PasswordChangeSerializer,
@@ -134,28 +131,6 @@ class PasswordChangeView(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"message": "Your password has been updated."}, status.HTTP_200_OK)
-
-
-class CreateTokenView(ObtainAuthToken):
-    """Create a new auth token for user"""
-
-    serializer_class = AuthTokenSerializer
-    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(
-            data=request.data, context={"request": request}
-        )
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data["user"]
-        try:
-            token, created = Token.objects.get_or_create(user=user)
-            return Response(
-                {"token": token.key, "created": created, "roles": user.roles},
-                status=status.HTTP_200_OK,
-            )
-        except Exception as e:
-            return Response({"message": str(e)}, 500)
 
 
 class UserViewsets(viewsets.ModelViewSet):
