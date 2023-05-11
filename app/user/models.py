@@ -64,6 +64,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     def save_last_login(self) -> None:
         self.last_login = datetime.now()
         self.save()
+    
+    def permission_list(self):
+        from user.permissions import get_user_permissions
+        return get_user_permissions(self)
 
 
 class Token(models.Model):

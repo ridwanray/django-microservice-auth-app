@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
 
+import jwt
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
@@ -7,8 +9,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import filters, serializers, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .enums import TokenEnum
@@ -274,3 +278,27 @@ class PermissionViewSet(viewsets.ModelViewSet):
         return super().list(request, *args, **kwargs)
 
 
+
+from functools import wraps
+from rest_framework.exceptions import AuthenticationFailed
+
+
+class TokenDecode(APIView):
+    serializer_class = TokenDecodeSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        token = request.data.get('token', None)
+        if token:
+            try:
+                payload = jwt.decode(token, settings.SECRET_KEY, algorithms="HS256")
+            except Exception as err:
+                
+                raise AuthenticationFailed(F'Unauthenticated: {err}')
+
+            user = User.objects.get(id=payload['user_id'])
+            serializer = ListUserSerializer(instance=user)
+            return Response(
+                {**serializer.data, "permissions": user.permission_list()})
+
+        raise AuthenticationFailed('Unauthenticated')
