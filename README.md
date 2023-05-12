@@ -1,6 +1,6 @@
 # Django(DRF) Microservice Authentication App
 
-[Complete Guide](https://www.example.com](https://medium.com/@ridwanray/implement-jwt-authentication-for-communication-between-2-microservices-auth-product-services-in-bc83d1d32844)
+[Visit My Website](https://medium.com/@ridwanray/implement-jwt-authentication-for-communication-between-2-microservices-auth-product-services-in-bc83d1d32844)
 
 ## Tools & Services:
 - Django & DRF : for building the APIs
