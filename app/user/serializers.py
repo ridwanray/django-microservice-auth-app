@@ -107,6 +107,7 @@ class ListUserSerializer(serializers.ModelSerializer):
             "verified",
             "created_at",
             "roles",
+            "is_admin",
         ]
 
         extra_kwargs = {
